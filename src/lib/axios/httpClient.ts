@@ -1,3 +1,4 @@
+import { ApiResponse } from '@/types/api.types';
 import axios from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -6,7 +7,7 @@ if (!API_BASE_URL) {
   throw new Error('NEXT_PUBLIC_API_BASE_URL is not defined');
 }
 
-const instance = axios.create({
+const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
   headers: {
@@ -14,14 +15,16 @@ const instance = axios.create({
   },
 });
 
+const instance = axiosInstance;
+
 export interface ApiRequestOptions {
   params?: Record<string, unknown>;
   headers?: Record<string, string>;
 }
 
-const httpGet = async (endpoint: string, options?: ApiRequestOptions) => {
+const httpGet = async <TData>(endpoint: string, options?: ApiRequestOptions): Promise<ApiResponse<TData>> => {
   try {
-    const response = await instance.get(endpoint, {
+    const response = await instance.get<ApiResponse<TData>>(endpoint, {
       params: options?.params,
       headers: options?.headers,
     });
@@ -32,13 +35,9 @@ const httpGet = async (endpoint: string, options?: ApiRequestOptions) => {
   }
 };
 
-const httpPost = async (
-  endpoint: string,
-  data?: unknown,
-  options?: ApiRequestOptions
-) => {
+const httpPost =  async<TData>(endpoint: string, data?: unknown, options?: ApiRequestOptions): Promise<ApiResponse<TData>> => {
   try {
-    const response = await instance.post(endpoint, data, {
+    const response = await instance.post<ApiResponse<TData>>(endpoint, data, {
       params: options?.params,
       headers: options?.headers,
     });
@@ -50,13 +49,14 @@ const httpPost = async (
   }
 };
 
-const httpPut = async (
+
+const httpPut = async <TData>(
   endpoint: string,
   data?: unknown,
   options?: ApiRequestOptions
-) => {
+): Promise<ApiResponse<TData>> => {
   try {
-    const response = await instance.put(endpoint, data, {
+    const response = await instance.put<ApiResponse<TData>>(endpoint, data, {
       params: options?.params,
       headers: options?.headers,
     });
@@ -67,9 +67,9 @@ const httpPut = async (
   }
 };
 
-const httpDelete = async (endpoint: string, options?: ApiRequestOptions) => {
+const httpDelete = async <TData>(endpoint: string, options?: ApiRequestOptions): Promise<ApiResponse<TData>> => {
   try {
-    const response = await instance.delete(endpoint, {
+    const response = await instance.delete<ApiResponse<TData>>(endpoint, {
       params: options?.params,
       headers: options?.headers,
     });
@@ -80,13 +80,13 @@ const httpDelete = async (endpoint: string, options?: ApiRequestOptions) => {
   }
 };
 
-const httpPatch = async (
+const httpPatch = async <TData>(
   endpoint: string,
   data?: unknown,
   options?: ApiRequestOptions
-) => {
+): Promise<ApiResponse<TData>> => {
   try {
-    const response = await instance.patch(endpoint, data, {
+    const response = await instance.patch<ApiResponse<TData>>(endpoint, data, {
       params: options?.params,
       headers: options?.headers,
     });
