@@ -12,5 +12,3 @@ export const getDoctors = async () => {
         throw error
     }
 }
-
-
